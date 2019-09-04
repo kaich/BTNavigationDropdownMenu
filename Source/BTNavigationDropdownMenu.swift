@@ -248,7 +248,7 @@ open class BTNavigationDropdownMenu: UIView {
         - title: A string to define title to be displayed.
         - items: The array of items to select
      */
-    public convenience init(navigationController: UINavigationController? = nil, containerView: UIView = UIApplication.shared.keyWindow!, title: String, items: [String]) {
+    public convenience init(navigationController: UINavigationController!, containerView: UIView, title: String, items: [String]) {
 
         self.init(navigationController: navigationController, containerView: containerView, title: BTTitle.title(title), items: items)
     }
@@ -265,19 +265,10 @@ open class BTNavigationDropdownMenu: UIView {
         - title: An enum to define title to be displayed, can be a string or index of items.
         - items: The array of items to select
      */
-    public init(navigationController: UINavigationController? = nil, containerView: UIView = UIApplication.shared.keyWindow!, title: BTTitle, items: [String]) {
-        // Key window
-        guard let window = UIApplication.shared.keyWindow else {
-            super.init(frame: CGRect.zero)
-            return
-        }
+    public init(navigationController: UINavigationController!, containerView: UIView, title: BTTitle, items: [String]) {
 
         // Navigation controller
-        if let navigationController = navigationController {
-            self.navigationController = navigationController
-        } else {
-            self.navigationController = window.rootViewController?.topMostViewController?.navigationController
-        }
+        self.navigationController = navigationController
 
         // Get titleSize
         let titleSize: CGSize
@@ -319,7 +310,7 @@ open class BTNavigationDropdownMenu: UIView {
         self.menuArrow = UIImageView(image: self.configuration.arrowImage.withRenderingMode(.alwaysTemplate))
         self.menuButton.addSubview(self.menuArrow)
 
-        let menuWrapperBounds = window.bounds
+        let menuWrapperBounds = window!.bounds
 
         // Set up DropdownMenu
         self.menuWrapper = UIView(frame: CGRect(x: menuWrapperBounds.origin.x, y: 0, width: menuWrapperBounds.width, height: menuWrapperBounds.height))
@@ -340,7 +331,7 @@ open class BTNavigationDropdownMenu: UIView {
 
         // Init table view
         let navBarHeight = self.navigationController?.navigationBar.bounds.size.height ?? 0
-        let statusBarHeight = UIApplication.shared.statusBarFrame.height
+        let statusBarHeight = navigationController.navigationBar.frame.minY
         self.tableView = BTTableView(frame: CGRect(x: menuWrapperBounds.origin.x, y: menuWrapperBounds.origin.y + 0.5, width: menuWrapperBounds.width, height: menuWrapperBounds.height + 300 - navBarHeight - statusBarHeight), items: items, title: titleToDisplay, configuration: self.configuration)
 
         self.tableView.selectRowAtIndexPathHandler = { [weak self] (indexPath: Int) -> () in
